@@ -10,7 +10,7 @@ void main() async{
     home: new home(),
     theme: new ThemeData(
       primaryColor: Colors.pink.shade600,
-      fontFamily: 'yekan.ttf',
+      fontFamily: 'yekan',
 
 
     ),

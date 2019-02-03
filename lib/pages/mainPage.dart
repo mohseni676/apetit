@@ -60,7 +60,13 @@ class mainState extends State<mainPage> {
         child: Scaffold(
 
           appBar: new AppBar(
-            title: new Text('${_trainer}'),
+            title: new Text('اَپتیت مربیان',
+            textScaleFactor: 1.5,
+              style: TextStyle(
+                fontWeight: FontWeight.w700
+              ),
+            ),
+            centerTitle: true,
           ),
           body:
 
