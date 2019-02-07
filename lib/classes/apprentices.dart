@@ -1,12 +1,12 @@
-class apprenticesClass {
+class apprentices {
   List<Data> data;
   Links links;
   Meta meta;
   bool success;
 
-  apprenticesClass({this.data, this.links, this.meta, this.success});
+  apprentices({this.data, this.links, this.meta, this.success});
 
-  apprenticesClass.fromJson(Map<String, dynamic> json) {
+  apprentices.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       data = new List<Data>();
       json['data'].forEach((v) {

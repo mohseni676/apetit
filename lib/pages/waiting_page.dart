@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:apetit/classes/globals.dart' as globals;
 import 'package:apetit/classes/apprentices.dart';
 import 'package:async/async.dart';
+import 'package:apetit/pages/waiting_user_page.dart';
 
 class waitingPage extends StatefulWidget{
   @override
@@ -13,8 +14,8 @@ class waitingPage extends StatefulWidget{
   }
 }
 class waitingPageState extends State<waitingPage> {
-    apprenticesClass _apprS= new apprenticesClass();
-   Future<apprenticesClass> _apprenticeList(String _token,int _page) async {
+    apprentices _apprS= new apprentices();
+   Future<apprentices> _apprenticeList(String _token,int _page) async {
    try{ var response = await http.post('${globals.ServerAddress}/api/v1/coach/apprentice?page=${_page}',
         headers: {
           'Accept': 'application/json',
@@ -26,7 +27,7 @@ class waitingPageState extends State<waitingPage> {
     );
     if (response.statusCode == 200) {
       var x = json.decode(response.body);
-      _apprS=apprenticesClass.fromJson(x);
+      _apprS=apprentices.fromJson(x);
 
       debugPrint(_apprS.data[0].user.name);
       return _apprS;
@@ -71,7 +72,7 @@ class waitingPageState extends State<waitingPage> {
 
                           default:
                           //return Text('ok');
-                            apprenticesClass ls=snapshot.data;
+                            apprentices ls=snapshot.data;
                             return new ListView.builder(
                                 itemCount: ls.data.length,
                                 itemBuilder: (BuildContext context,int index){
@@ -112,7 +113,9 @@ class waitingPageState extends State<waitingPage> {
                                         new Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: <Widget>[
-                                            new IconButton(icon: Icon(Icons.lock), onPressed: (){},),
+                                            new IconButton(icon: Icon(Icons.lock), onPressed: (){
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (build)=>waiting_user(snapshot.data,index)));
+                                            },),
                                             new IconButton(icon: Icon(Icons.track_changes), onPressed: (){}),
                                           ],
 
