@@ -3,14 +3,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'classes/globals.dart' as globals;
 import 'pages/mainPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
   runApp(new MaterialApp(
     title: 'Appetit',
     home: new home(),
+    debugShowCheckedModeBanner: false,
     theme: new ThemeData(
       primaryColor: Colors.pink.shade600,
       fontFamily: 'yekan',
+      bottomAppBarColor: Colors.pink,
+      //canvasColor: Colors.pink,
 
 
     ),
@@ -28,9 +32,39 @@ class home extends StatefulWidget {
 
 class homeState extends State<home> {
 
+
+
   TextEditingController _mobile= new TextEditingController();
   TextEditingController _password=new TextEditingController();
+  bool _isSaved=false;
+  //final pref=await SharedPreferences.getInstance();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadLoginData();
 
+  }
+
+  _loadLoginData() async{
+    SharedPreferences _prefs=await SharedPreferences.getInstance();
+    if (_prefs.getBool('isLoginSaved')){
+      setState(() {
+        _mobile.text=_prefs.getString('mobile');
+        _password.text=_prefs.getString('password');
+        _isSaved=_prefs.getBool('isLoginSaved');
+      });
+    }
+  }
+
+  _saveLoginDate() async{
+    SharedPreferences _prefs=await SharedPreferences.getInstance();
+    setState(() {
+      _prefs.setBool('isLoginSaved', _isSaved);
+      _prefs.setString('mobile', _mobile.text);
+      _prefs.setString('password', _password.text);
+    });
+  }
   void auth (String user,String pass) async{
     debugPrint('x');
     var response=await http.post(
@@ -47,6 +81,7 @@ class homeState extends State<home> {
       var x=json.decode(response.body);
       debugPrint(x['access_token'].toString());
       globals.token=x['access_token'].toString();
+      _saveLoginDate();
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>mainPage(globals.token)));
     }else{
       debugPrint('No');
@@ -61,73 +96,94 @@ class homeState extends State<home> {
           appBar: new AppBar(
             title: new Text('Appetit'),
             centerTitle: true,
+            
           ),
-          body: new Center(
-            child: new ListView(
-              padding: EdgeInsets.all(25.0),
-              children: <Widget>[
-                new CircleAvatar(
-                  maxRadius: 65.0,
-                  backgroundColor: Colors.pinkAccent,
+          body: new Container(
+           /* decoration: BoxDecoration(
+              image: DecorationImage(image: new AssetImage('assets/images/bgfirst.jpg'),
+              fit: BoxFit.fill
+              )
+            ),*/
+            child: new Center(
+              child: new ListView(
+                padding: EdgeInsets.all(25.0),
+                children: <Widget>[
+                  new CircleAvatar(
+                    maxRadius: 65.0,
+                    backgroundColor: Colors.pinkAccent,
 
-                  child: ClipOval(
-                    clipBehavior: Clip.antiAlias,
-                    child: new Icon(Icons.fitness_center,
-                      size: 60.0,
+                    child: ClipOval(
+                      clipBehavior: Clip.antiAlias,
+                      child: new Icon(Icons.fitness_center,
+                        size: 60.0,
 
 
+                      ),
+                    ),
+                  ) ,
+                  new SizedBox(
+                    height: 20.0,
+                  ),
+                  new TextFormField(
+                    controller: _mobile,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.phone_android),
+                        hintText: 'شماره همراه',
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+
+                        )
                     ),
                   ),
-                ) ,
-                new SizedBox(
-                  height: 20.0,
-                ),
-                new TextFormField(
-                  controller: _mobile,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.phone_android),
-                    hintText: 'شماره همراه',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                      
-                    )
-                  ),
-                ),
-                new Padding(padding: EdgeInsets.all(4.0)),
-                new TextFormField(
-                  controller: _password,
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.vpn_key),
-                      hintText: 'رمز عبور',
+                  new Padding(padding: EdgeInsets.all(4.0)),
+                  new TextFormField(
+                    controller: _password,
+                    //keyboardType: TextInputType.number,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.vpn_key),
+                        hintText: 'رمز عبور',
 
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50.0),
 
-                      )
+                        )
+                    ),
                   ),
-                ),
-                new Padding(padding: EdgeInsets.all(5.0)),
-                RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
+                  new Padding(padding: EdgeInsets.all(5.0)),
+                  new Row(
+                    children: <Widget>[
+                      new Checkbox(value: _isSaved, onChanged: (bool _val){
+                        setState(() {
+                          _isSaved=_val;
+                        });
+                      }),
+                      new Text('ذخیره اطلاعات ورود')
+                    ],
+                  ),
 
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+
+                    ),
+                    onPressed: () async{
+                      //Navigator.of(context).pushNamed(HomePage.tag);
+                      await auth(_mobile.text, _password.text);
+                    },
+
+                    padding: EdgeInsets.all(18),
+                    color: Colors.pinkAccent,
+                    child: Text('ورود به سیستم', style: TextStyle(color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    )),
                   ),
-                  onPressed: () async{
-                    //Navigator.of(context).pushNamed(HomePage.tag);
-                    await auth(_mobile.text, _password.text);
-                  },
-                  padding: EdgeInsets.all(18),
-                  color: Colors.pinkAccent,
-                  child: Text('ورود به سیستم', style: TextStyle(color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  )),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          )
         ));
   }
 }
