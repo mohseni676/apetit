@@ -21,8 +21,8 @@ class waiting_user extends StatefulWidget{
 class waiting_user_state extends State<waiting_user> {
   apprentices _apprentices=new apprentices();
   int _currentApperenticeId;
+  GlobalKey<ScaffoldState> scaffoldKey =new GlobalKey();
 
-  //var _cuurentApperentice=_apprentices.data[_currentApperenticeId].user;
 
 
   waiting_user_state(this._apprentices,this._currentApperenticeId);
@@ -31,10 +31,14 @@ class waiting_user_state extends State<waiting_user> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Directionality(textDirection: TextDirection.rtl,
-        child: new Scaffold(
-         /* appBar: new AppBar(
-            title: new Text(_apprentices.data[_currentApperenticeId].user.name+' '+_apprentices.data[_currentApperenticeId].user.family),
-          ),*/
+        child:Builder(builder: (context) => new Scaffold(
+          key: scaffoldKey,
+          drawer: Drawer(
+
+            child: custWidgets.globalDrawer(scaffoldKey)
+
+          ),
+
           body: new Container(
             color: Colors.black45.withOpacity(.5),
             child: new Stack(
@@ -43,7 +47,7 @@ class waiting_user_state extends State<waiting_user> {
               children: <Widget>[
 
                 _headerImage(),
-                custWidgets.buildTopHeader('',false,false),
+                custWidgets.buildTopHeader('',true,true,scaffoldKey),
 
                 _buildProfileRow(_apprentices.data[_currentApperenticeId].user.name+' '+_apprentices.data[_currentApperenticeId].user.family,
                     _apprentices.data[_currentApperenticeId].user.avatar
@@ -54,7 +58,7 @@ class waiting_user_state extends State<waiting_user> {
             ),
           )
           ),
-        );
+        ));
   }
 
   _headerImage() {

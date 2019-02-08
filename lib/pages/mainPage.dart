@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:apetit/classes/globals.dart' as globals;
 import 'waiting_page.dart';
+import 'package:apetit/widgets/cust_widgets.dart' as cust_Widgets;
 
 class mainPage extends StatefulWidget {
   String _token;
@@ -25,6 +26,7 @@ class mainState extends State<mainPage> {
   int _waiting=0;
   int _apprentice=0;
   int _messages=0;
+  GlobalKey<ScaffoldState> _globalKey=new GlobalKey();
 
   mainState(this._token);
 
@@ -80,8 +82,10 @@ class mainState extends State<mainPage> {
     }else{
       return
         Scaffold(
+          key: _globalKey,
+         drawer: cust_Widgets.globalDrawer(_globalKey),
           
-          appBar: new AppBar(
+         /* appBar: new AppBar(
           title: new Text('اَپتیت مربیان',
           textScaleFactor: 1.2,
           style: TextStyle(
@@ -89,82 +93,77 @@ class mainState extends State<mainPage> {
       ),
     ),
     centerTitle: true,
-    ),
-    /*bottomNavigationBar:new Theme(data: ThemeData(
-      canvasColor: Colors.pink,
-      fontFamily: 'yekan',
-    ),
-      child: BottomNavigationBar(items: [
-      new BottomNavigationBarItem(icon: Icon(Icons.dashboard),title: new Text('داشبورد')),
-      new BottomNavigationBarItem(icon: Icon(Icons.accessibility_new),title: new Text('B')),
-      new BottomNavigationBarItem(icon: Icon(Icons.chat),title: new Text('C')),
-      new BottomNavigationBarItem(icon: Icon(Icons.monetization_on),title: new Text('D')),
+    ),*/
 
-    ],
-      fixedColor: Colors.pink,),),*/
 
 
     body:
-        new Center(
+        new Stack(
           
-          child: new Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(image: new AssetImage('assets/images/bgchat.jpg',
-
-              ),
-                fit: BoxFit.fill,
-
-              ),
+          children: <Widget>[
+            new Container(
 
 
-            ),
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              //shrinkWrap: true,
-              //padding: EdgeInsets.all(8.0),
-              children: <Widget>[
-                new Container(
-                  width: 120.0,
-                  height: 120.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        new BoxShadow(
-                            color: Colors.black,
-                            offset: new Offset(7.0, 4.0),
-                            blurRadius: 15.0
+              decoration: BoxDecoration(
+                image: DecorationImage(image: new AssetImage('assets/images/bgchat.jpg',
 
-                        )
-                      ],
-                      image: new DecorationImage(
-                          image: NetworkImage(_imgUrl), fit: BoxFit.fill),
-                      border: Border.all(
-                          color: Colors.black45,
-                          width: 2.0,
-                          style: BorderStyle.solid
-                      )),
                 ),
-                new Padding(padding: EdgeInsets.all(2.0)),
-                new Text(_trainer,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    shadows: [
-                    /*  new Shadow(
+                  fit: BoxFit.fill,
+
+                ),
+
+
+              ),
+              padding: EdgeInsets.fromLTRB(8.0, 45.0, 8.0, 8.0),
+              child: Column(
+                //shrinkWrap: true,
+                //padding: EdgeInsets.all(8.0),
+                children: <Widget>[
+                  new Container(
+                    width: 120.0,
+                    height: 120.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          new BoxShadow(
+                              color: Colors.black,
+                              offset: new Offset(7.0, 4.0),
+                              blurRadius: 15.0
+
+                          )
+                        ],
+                        image: new DecorationImage(
+                            image: NetworkImage(_imgUrl), fit: BoxFit.fill),
+                        border: Border.all(
+                            color: Colors.black45,
+                            width: 2.0,
+                            style: BorderStyle.solid
+                        )),
+                  ),
+                  new Padding(padding: EdgeInsets.all(2.0)),
+                  new Text(_trainer,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      shadows: [
+                        /*  new Shadow(
                           color: Colors.pink,
                           blurRadius: 12.0,
                           offset: new Offset(3.0, 2.0)
                       )*/
-                    ],
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                      ],
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    textScaleFactor: 1.5,
                   ),
-                  textScaleFactor: 1.5,
-                ),
-                new Padding(padding: EdgeInsets.only(top: 15.0)),
-                _buildDashboard(),
-              ],
+                  new Padding(padding: EdgeInsets.only(top: 15.0)),
+                  _buildDashboard(),
+                ],
+              ),
             ),
-          )
+            //new cust_Widgets.buildTopHeader('',true,true,scaffoldKey),
+            cust_Widgets.buildTopHeader('', false, true, _globalKey)
+          ],
       )
         );
     }
