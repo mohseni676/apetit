@@ -22,10 +22,36 @@ class waiting_user_state extends State<waiting_user> {
   apprentices _apprentices=new apprentices();
   int _currentApperenticeId;
   GlobalKey<ScaffoldState> scaffoldKey =new GlobalKey();
+  //apprentices _app=new apprentices();
+  User _user=new User();
+  Data _userData=new Data();
+ // bool expanded = false;
+  String _illness='ندارد';
 
 
 
   waiting_user_state(this._apprentices,this._currentApperenticeId);
+
+  //  _user=_apprentices.data[_currentApperenticeId].user;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+     _user=_apprentices.data[_currentApperenticeId].user;
+     _userData=_apprentices.data[_currentApperenticeId];
+     switch (_apprentices.data[_currentApperenticeId].user.illness)
+     {
+       case 1:
+         _illness='دارد';
+         break;
+       case 0:
+         _illness='ندارد';
+         break;
+         
+
+     }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,26 +65,117 @@ class waiting_user_state extends State<waiting_user> {
 
           ),
 
-          body: new Container(
-            color: Colors.black45.withOpacity(.5),
-            child: new Stack(
+          body: new Stack(
 
-              //fit: StackFit.expand,
-              children: <Widget>[
 
-                _headerImage(),
-                custWidgets.buildTopHeader('',true,true,scaffoldKey),
+                //fit: StackFit.expand,
+                children: <Widget>[
+                  new Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage('assets/images/bgfirst.jpg'),
+                      fit: BoxFit.fill,
+                      ),
 
-                _buildProfileRow(_apprentices.data[_currentApperenticeId].user.name+' '+_apprentices.data[_currentApperenticeId].user.family,
-                    _apprentices.data[_currentApperenticeId].user.avatar
-                    ,18
-                )
 
-              ],
-            ),
-          )
-          ),
-        ));
+                    ),
+                    //height: 350.0,
+                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 5.0),
+                    child: new Column(
+                      children: <Widget>[
+                        // _headerImage(),
+                        custWidgets.buildTopHeader('',true,true,scaffoldKey),
+
+
+                        _buildProfileRow('${_user.name} ${_user.family}',
+                            _user.avatar
+                            ,_user.birth
+                        ),
+                        new Padding(padding: EdgeInsets.all(5.0)),
+                        new Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              style: BorderStyle.solid,
+                              width: 2.0,
+                              color: Colors.white30,
+                            ),
+                            color: Colors.black.withOpacity(0.5),
+                            
+                            
+                          ),
+                          padding: EdgeInsets.fromLTRB(8.0, 2.0, 16.0, 2.0),
+                          child: new ExpansionTile(
+                              title: new Text('مشخصات فردی'),
+                          children: <Widget>[
+                            new Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                new Text('وزن: ${_user.weight}'),
+                                new Text('قد: ${_user.height}'),
+                                new Text('تاریخ تولد: ${_user.birthday}'),
+                                new Text('بیماری: $_illness')
+
+                              ],
+                            )
+                          ],
+                          ),
+                          
+                        ),
+                        new Padding(padding: EdgeInsets.only(top: 5.0)),
+                        new Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              style: BorderStyle.solid,
+                              width: 2.0,
+                              color: Colors.white30,
+                            ),
+                            color: Colors.black.withOpacity(0.5),
+
+
+                          ),
+                          padding: EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
+                          child: new ExpansionTile(
+                            title: new Text('مشخصات دوره درخواستی'),
+                            children: <Widget>[
+                              new Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  new Text('جلسات درخواستی: ${_userData.sessions}'),
+                                  new Text('test'),
+                                  new Text('test'),
+                                  new Text('test'),
+                                  new Text('test'),
+
+                                ],
+                              )
+                            ],
+                          ),
+
+                        ),
+
+
+
+
+
+
+                      ],
+                    ),
+                  )
+
+
+                    ],
+                  )
+                  //new Padding(padding: EdgeInsets.only(top: 65.0)),
+
+
+                ,
+              ),
+            )
+            ,
+
+
+        );
   }
 
   _headerImage() {
@@ -66,7 +183,7 @@ class waiting_user_state extends State<waiting_user> {
       clipper: new DialogonalClipper(),
     child: Image.asset(
       'assets/images/bgfirst.jpg',
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       //height: 256,
     )
     );
@@ -78,8 +195,8 @@ class DialogonalClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = new Path();
     //path.lineTo(0.0, -100.0);
-    path.lineTo(0.0, size.height - 360.0);
-    path.lineTo(size.width, size.height-460.0);
+    path.lineTo(0.0, size.height - 260.0);
+    path.lineTo(size.width, size.height-360.0);
     path.lineTo(size.width, 0.0);
     path.close();
 
@@ -92,17 +209,13 @@ class DialogonalClipper extends CustomClipper<Path> {
 }
 Widget _buildProfileRow(String fullname,String avatar,int age) {
   return new Padding(
-    padding: new EdgeInsets.only(left: 16.0, top: 365 / 2.5),
+    padding: new EdgeInsets.only(left: 16.0, top: 0.0),
     child: new Row(
       children: <Widget>[
         new Container(
-
-
           decoration: BoxDecoration(
-
             image: DecorationImage(image: NetworkImage(avatar)),
             shape: BoxShape.circle,
-
           ),
           height: 65.0,
           width: 65.0,
@@ -129,7 +242,7 @@ Widget _buildProfileRow(String fullname,String avatar,int age) {
               new Text(
                 'سن: $age',
                 style: new TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 18.0,
                     color: Colors.white,
                     fontWeight: FontWeight.w300),
               ),
