@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'classes/globals.dart' as globals;
@@ -6,10 +7,16 @@ import 'pages/mainPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(new MaterialApp(
+
     title: 'Appetit',
     home: new home(),
     debugShowCheckedModeBanner: false,
+
     theme: new ThemeData(
         fontFamily: 'yekan',
      buttonColor: Colors.pinkAccent,

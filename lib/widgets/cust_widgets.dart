@@ -19,7 +19,7 @@ Widget buildTopHeader(String title,bool hasBack,bool hasMenu,GlobalKey<ScaffoldS
   if (hasBack)
   _w.add(new IconButton(icon: Icon(Icons.arrow_forward_ios, color: Colors.white), onPressed: ()=>Navigator.pop(key.currentContext)));
   return new Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 32.0),
+    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
     child: new Row(
       children: _w,
     ),

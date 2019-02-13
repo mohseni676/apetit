@@ -27,7 +27,7 @@ class waiting_user_state extends State<waiting_user> {
   Data _userData=new Data();
  // bool expanded = false;
   String _illness='ندارد';
-
+  List<Targets> _targets;
 
 
   waiting_user_state(this._apprentices,this._currentApperenticeId);
@@ -50,6 +50,7 @@ class waiting_user_state extends State<waiting_user> {
          
 
      }
+     _targets=_apprentices.data[_currentApperenticeId].targets;
 
   }
 
@@ -103,13 +104,36 @@ class waiting_user_state extends State<waiting_user> {
                             
                           ),
                           padding: EdgeInsets.fromLTRB(8.0, 2.0, 16.0, 2.0),
-                          child: new ExpansionTile(
-                              title: new Text('مشخصات فردی'),
-                          children: <Widget>[
+                          child:
                             new Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
+                                new Container(
+
+                                  child: new Text('مشخصات فردی ورزشکار',
+                                    textScaleFactor: 1.4,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold
+                                    ),
+
+
+                                  ),
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              width: 2.0,
+                                              color: Colors.white
+                                          )
+                                      )
+                                  ),
+                                ),
+                                new SizedBox(
+                                  height: 3.0,
+                                ),
+
                                 new Text('وزن: ${_user.weight}'),
                                 new Text('قد: ${_user.height}'),
                                 new Text('تاریخ تولد: ${_user.birthday}'),
@@ -117,8 +141,7 @@ class waiting_user_state extends State<waiting_user> {
 
                               ],
                             )
-                          ],
-                          ),
+                          ,
                           
                         ),
                         new Padding(padding: EdgeInsets.only(top: 5.0)),
@@ -134,23 +157,79 @@ class waiting_user_state extends State<waiting_user> {
 
                           ),
                           padding: EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
-                          child: new ExpansionTile(
-                            title: new Text('مشخصات دوره درخواستی'),
-                            children: <Widget>[
-                              new Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  new Text('جلسات درخواستی: ${_userData.sessions}'),
-                                  new Text('test'),
-                                  new Text('test'),
-                                  new Text('test'),
-                                  new Text('test'),
+                          //height: 280.0,
+                            constraints: BoxConstraints(
+                              minHeight: 260.0,
+                              maxHeight: 290.0
+                            ),
 
+                          
+                          child: new
+                              Column(
+
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  new Container(
+
+                          child: new Text('اهداف تمرینی',
+                            textScaleFactor: 1.4,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+
+
+                          ),
+                                    padding: EdgeInsets.only(top: 8.0),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          width: 2.0,
+                                          color: Colors.white
+                                        )
+                                      )
+                                    ),
+                                  ),
+                                  new SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  new Expanded(child:
+                                  new ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                      itemCount: _targets.length,
+                                      itemBuilder: (BuildContext context,int index){
+                                        return new Card(
+                                          child: new Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              new Row(
+                                                children: <Widget>[
+                                                  new Padding(padding: EdgeInsets.only(right: 8.0)),
+                                                  new Text(_targets[index].name)
+                                                ],
+                                                
+                                              ),
+                                              new Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+
+                                                children: <Widget>[
+                                                  new IconButton(icon: Icon(Icons.build), onPressed: (){debugPrint(_user.id.toString());}),
+                                                  new IconButton(icon: Icon(Icons.fastfood), onPressed: null)
+                                                ],
+                                                
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+
+                                  ),
+                                  ),
+                                  //new Text('test')
                                 ],
                               )
-                            ],
-                          ),
 
                         ),
 
