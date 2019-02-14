@@ -97,5 +97,59 @@ class SubTrainsChilds {
   }
 }
 
+class Workouts {
+  List<Workout> data;
+  bool success;
+
+  Workouts({this.data, this.success});
+
+  Workouts.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      data = new List<Workout>();
+      json['data'].forEach((v) { data.add(new Workout.fromJson(v)); });
+    }
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    data['success'] = this.success;
+    return data;
+  }
+}
+
+class Workout {
+  int id;
+  String title;
+  Null description;
+  //Image image;
+  String video;
+
+  Workout({this.id, this.title, this.description,  this.video});
+
+  Workout.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    description = json['description'];
+    //image = json['image'] != null ? new Image.fromJson(json['image']) : null;
+    video = json['video'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['description'] = this.description;
+
+    data['video'] = this.video;
+    return data;
+  }
+}
+
+}
+
 
 

@@ -23,13 +23,14 @@ class addTrainingState extends State<addTraining> {
   addTrainingState(this.apprenticId);
   String _mySelection;
   String _myChildSelection;
+  String _myImageSelection;
   GlobalKey<ScaffoldState> _globalKey=new GlobalKey();
 
   List<DropdownMenuItem<Trains>> headTags = new List();
   List<DropdownMenuItem<SubTrainsChilds>> childTags=new List();
-//  List<DropdownMenuItem<SubTrainsChilds>> headChils=new List();
+  Widget _imageRadios=new Text('test');
 
-  VideoPlayerController _controller;
+
 
   Icon _icon=Icon(Icons.play_arrow);
 
@@ -110,6 +111,24 @@ class addTrainingState extends State<addTraining> {
     return childTags;
   }
 
+  Future<Workouts> _getWorkoutImages(String token,String id) async{
+    var response=await http.post(
+        '${globals.ServerAddress}/api/v1/coach/workout',
+        body: {
+          "id":"$id"
+        },
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+    );
+    var jsonresponse=json.decode(response.body);
+    Workouts jsondecode=Workouts.fromJson(jsonresponse);
+    return jsondecode;
+  }
+
+
+
 
 
   @override
@@ -118,12 +137,12 @@ class addTrainingState extends State<addTraining> {
     //this._getHeaderTagList(globals.token);
     headTags = _createHeadDWlist();
     super.initState();
-    _controller = VideoPlayerController.network(
+/*    _controller = VideoPlayerController.network(
         'https://tci1.asset.aparat.com/aparat-video/9e30764ba06e2bd089fdd0153020efe513681805-480p__15621.mp4')
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
-      });
+      });*/
     //this._getHeaderTagList(globals.token);
     //this._mySelection=headTags[0].value.id.toString();
   }
@@ -174,12 +193,98 @@ class addTrainingState extends State<addTraining> {
 
           setState(() {
             _myChildSelection = newVal;
+            _imageRadios=workoutVideoRadios();
           });
         },
         value: _myChildSelection,
       );
     else
       return new SizedBox(height: 4.0,);
+  }
+
+  Widget workoutVideoRadios(){
+    if (_myChildSelection!=null)
+    return FutureBuilder<Workouts>(
+      future: _getWorkoutImages(globals.token, _myChildSelection),
+      builder: (context,snapshot){
+        switch (snapshot.connectionState){
+          case ConnectionState.waiting:
+            case ConnectionState.active:
+              return new Text('Images Loading');
+          case ConnectionState.none:
+            return new Text('No Connection');
+          case ConnectionState.done:
+            {
+              if (!snapshot.hasData)
+                return new Text('فیلمی وجود ندارد');
+              else{
+                var ls=snapshot.data;
+                List<Widget> _widgets=new List();
+                ls.data.forEach((x){
+                  debugPrint(x.title);
+                  _widgets.add(
+                    new Text(x.title),
+/*
+                  new GestureDetector(
+                    child:
+                    new Card(
+                      margin: EdgeInsets.all(5.0),
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          new Container(
+                            height: 200,
+                            width: 400,
+                            decoration: BoxDecoration(
+                                color: Colors.pinkAccent.shade200,
+                                border: Border.all(
+                                    color: Colors.black,
+                                    style: BorderStyle.solid,
+                                    width: 3.0
+                                )
+                            ),
+                            child: new Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                new Icon(Icons.play_arrow,
+                                  color: Colors.blue,
+                                  size: 55.0,
+
+                                ),
+                                new Padding(padding: EdgeInsets.all(3.0)),
+                                new Text(x.title,textScaleFactor: 2.0,)
+
+                              ],
+                            ),
+                          )
+
+                        ],
+                      ),
+                    )
+                  )
+*/
+
+                  );
+
+                });
+                return new ListView(
+                  children: _widgets,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.all(5.0),
+
+                );
+
+              }
+            }
+        }
+      },
+
+    );
+
   }
 
 
@@ -210,6 +315,9 @@ class addTrainingState extends State<addTraining> {
                       children: <Widget>[
                         headDropDown(),
                         childDropDown(),
+                        _imageRadios,
+
+/*
                         new Stack(
                           alignment: Alignment.center,
                           children: <Widget>[
@@ -253,6 +361,7 @@ class addTrainingState extends State<addTraining> {
 
                           ],
                         )
+*/
 
 
 
@@ -261,40 +370,6 @@ class addTrainingState extends State<addTraining> {
 
 
                       ],
-                      /* child: new FutureBuilder(
-            future: _getHeaderList(globals.token),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              switch(snapshot.connectionState){
-                case ConnectionState.waiting:
-                case ConnectionState.active:
-                return Text('Loading');
-                break;
-                default:
-                  {
-                    TrainHeader ls=snapshot.data;
-                    for (Trains i in ls.trains)
-                      {
-                        headList.add(new DropdownMenuItem(child: new Text(i.name,),value: i,));
-                      }
-                      currentHead=headList[0].value;
-                    return DropdownButton(items: headList.toList(),
-                        value: currentHead,
-                        onChanged:changeHeadValue);
-
-
-
-                    return ListView.builder(
-                        itemCount: ls.trains.length,
-                        itemBuilder: (context,int index){
-                          return new Text(ls.trains[index].name);
-                        });
-
-
-                  }
-
-
-              }
-            })*/
                     ),
 
                   ),
